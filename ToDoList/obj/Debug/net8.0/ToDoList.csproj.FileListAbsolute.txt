@@ -12,3 +12,18 @@ E:\Repos\33. C# moja nauka\ToDoList\obj\Debug\net8.0\refint\ToDoList.dll
 E:\Repos\33. C# moja nauka\ToDoList\obj\Debug\net8.0\ToDoList.pdb
 E:\Repos\33. C# moja nauka\ToDoList\obj\Debug\net8.0\ToDoList.genruntimeconfig.cache
 E:\Repos\33. C# moja nauka\ToDoList\obj\Debug\net8.0\ref\ToDoList.dll
+D:\Repos\14. C#\ToDoList\bin\Debug\net8.0\ToDoList.exe
+D:\Repos\14. C#\ToDoList\bin\Debug\net8.0\ToDoList.deps.json
+D:\Repos\14. C#\ToDoList\bin\Debug\net8.0\ToDoList.runtimeconfig.json
+D:\Repos\14. C#\ToDoList\bin\Debug\net8.0\ToDoList.dll
+D:\Repos\14. C#\ToDoList\bin\Debug\net8.0\ToDoList.pdb
+D:\Repos\14. C#\ToDoList\obj\Debug\net8.0\ToDoList.GeneratedMSBuildEditorConfig.editorconfig
+D:\Repos\14. C#\ToDoList\obj\Debug\net8.0\ToDoList.AssemblyInfoInputs.cache
+D:\Repos\14. C#\ToDoList\obj\Debug\net8.0\ToDoList.AssemblyInfo.cs
+D:\Repos\14. C#\ToDoList\obj\Debug\net8.0\ToDoList.csproj.CoreCompileInputs.cache
+D:\Repos\14. C#\ToDoList\obj\Debug\net8.0\ToDoList.sourcelink.json
+D:\Repos\14. C#\ToDoList\obj\Debug\net8.0\ToDoList.dll
+D:\Repos\14. C#\ToDoList\obj\Debug\net8.0\refint\ToDoList.dll
+D:\Repos\14. C#\ToDoList\obj\Debug\net8.0\ToDoList.pdb
+D:\Repos\14. C#\ToDoList\obj\Debug\net8.0\ToDoList.genruntimeconfig.cache
+D:\Repos\14. C#\ToDoList\obj\Debug\net8.0\ref\ToDoList.dll
