@@ -40,39 +40,11 @@ while (!shallExit)
 
 Console.ReadKey();
 
-void PrintSelectedOption(string option)
-{
-    Console.WriteLine(option);
-}
-
-void AddTodo()
-{
-    bool isValidDescription = false;
-    while (!isValidDescription)
-    {
-        Console.WriteLine("Enter the TODO description:");
-        var description = Console.ReadLine();
-        if (description == "")
-        {
-            Console.WriteLine("Description cannot be empty.");
-        }
-        else if (todos.Contains(description))
-        {
-            Console.WriteLine("This description must be unique.");
-        }
-        else
-        {
-            isValidDescription = true;
-            todos.Add(description);
-        }
-    }
-}
-
 void SeeAllTodos()
 {
     if (todos.Count == 0)
     {
-        Console.WriteLine("No TODOs found.");
+        ShowNoTodosMessage();
         return;
     }
 
@@ -84,39 +56,85 @@ void SeeAllTodos()
     }
 }
 
+void AddTodo()
+{
+    string description;
+    do
+    {
+        Console.WriteLine("Enter the TODO description:");
+        description = Console.ReadLine();
+    } while (!IdDescriptionValid(description));
+
+    todos.Add(description);
+}
+
 void RemoveTodo()
 {
     if (todos.Count == 0)
     {
-        Console.WriteLine("No TODOs to remove.");
+        ShowNoTodosMessage();
         return;
     }
 
-    bool isIndexValid = false;
-    while (!isIndexValid)
+    int index;
+    do
     {
-        Console.WriteLine("Select the number of the TODO to remove:");
+        Console.WriteLine("Selected the index of the TODO to remove:");
         SeeAllTodos();
+    } while (!TryReadIndex(out index));
 
-        var userInput = Console.ReadLine();
+    RemoveTodoAtIndex(index - 1);
+}
 
-        if (userInput == "")
-        {
-            Console.WriteLine("Selected index cannot be empty.");
-            continue;
-        }
+void RemoveTodoAtIndex(int index)
+{
+    var todoToRemove = todos[index];
+    todos.RemoveAt(index);
+    Console.WriteLine($"Removed TODO: {todoToRemove}");
+}
 
-        if (int.TryParse(userInput, out int index) && index >= 1 && index <= todos.Count)
-        {
-            isIndexValid = true;
-            var indexOfTodo = index - 1;
-            var todoToRemove = todos[indexOfTodo];
-            todos.RemoveAt(indexOfTodo);
-            Console.WriteLine($"Removed TODO: {todoToRemove}");
-        }
-        else
-        {
-            Console.WriteLine("The given index is not valid.");
-        }
+void PrintSelectedOption(string option)
+{
+    Console.WriteLine(option);
+}
+
+void ShowNoTodosMessage()
+{
+    Console.WriteLine("No TODOs have been added yet.");
+}
+
+bool IdDescriptionValid(string description)
+{
+    if (description == "")
+    {
+        Console.WriteLine("Description cannot be empty.");
+        return false;
     }
+    else if (todos.Contains(description))
+    {
+        Console.WriteLine("This description must be unique.");
+        return false;
+    }
+
+    return true;
+}
+
+bool TryReadIndex(out int index)
+{
+    var userInput = Console.ReadLine();
+
+    if (userInput == "")
+    {
+        index = 0;
+        Console.WriteLine("Selected index cannot be empty.");
+        return false;
+    }
+
+    if (int.TryParse(userInput, out index) && index >= 1 && index <= todos.Count)
+    {
+        return true;
+    }
+
+    Console.WriteLine("The given index is not valid.");
+    return false;
 }
