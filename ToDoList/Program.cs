@@ -5,6 +5,7 @@ Console.WriteLine("Hello");
 bool shallExit = false;
 while (!shallExit)
 {
+    System.Console.WriteLine("====================");
     Console.WriteLine("What do you want to do?");
     Console.WriteLine("[S]ee all TODOs");
     Console.WriteLine("[A]dd a TODO");
@@ -17,6 +18,7 @@ while (!shallExit)
     {
         case "s":
             PrintSelectedOption("See all TODOs");
+            SeeAllTodos();
             break;
         case "a":
             PrintSelectedOption("Add a TODO");
@@ -24,6 +26,7 @@ while (!shallExit)
             break;
         case "r":
             PrintSelectedOption("Remove a TODO");
+            RemoveTodo();
             break;
         case "e":
             PrintSelectedOption("Exit");
@@ -34,6 +37,8 @@ while (!shallExit)
             break;
     }
 }
+
+Console.ReadKey();
 
 void PrintSelectedOption(string option)
 {
@@ -63,4 +68,55 @@ void AddTodo()
     }
 }
 
-Console.ReadKey();
+void SeeAllTodos()
+{
+    if (todos.Count == 0)
+    {
+        Console.WriteLine("No TODOs found.");
+        return;
+    }
+
+    Console.WriteLine("Your TODOs:");
+    for (int i = 0; i < todos.Count; i++)
+    {
+        string? todo = todos[i];
+        Console.WriteLine($"{i + 1}. {todo}");
+    }
+}
+
+void RemoveTodo()
+{
+    if (todos.Count == 0)
+    {
+        Console.WriteLine("No TODOs to remove.");
+        return;
+    }
+
+    bool isIndexValid = false;
+    while (!isIndexValid)
+    {
+        Console.WriteLine("Select the number of the TODO to remove:");
+        SeeAllTodos();
+
+        var userInput = Console.ReadLine();
+
+        if (userInput == "")
+        {
+            Console.WriteLine("Selected index cannot be empty.");
+            continue;
+        }
+
+        if (int.TryParse(userInput, out int index) && index >= 1 && index <= todos.Count)
+        {
+            isIndexValid = true;
+            var indexOfTodo = index - 1;
+            var todoToRemove = todos[indexOfTodo];
+            todos.RemoveAt(indexOfTodo);
+            Console.WriteLine($"Removed TODO: {todoToRemove}");
+        }
+        else
+        {
+            Console.WriteLine("The given index is not valid.");
+        }
+    }
+}
