@@ -1,8 +1,10 @@
+using CookieCookbook.Recipes;
+
 var cookiesRecipesApp = new CookiesRecipesApp(
     new RecipesRepository(),
     new RecipesConsoleUserInteraction()
 );
-cookiesRecipesApp.Run();
+cookiesRecipesApp.Run("recipes.txt");
 
 public class CookiesRecipesApp
 {
@@ -18,29 +20,29 @@ public class CookiesRecipesApp
         _recipesUserInteraction = recipesUserInteraction;
     }
 
-    public void Run()
+    public void Run(string filePath)
     {
         var allRecipies = _recipesRepository.Read(filePath);
         _recipesUserInteraction.PrintExistingRecipes(allRecipies);
 
-        _recipesUserInteraction.PromptToCreateRecipe();
+        // _recipesUserInteraction.PromptToCreateRecipe();
 
-        var ingredients = _recipesUserInteraction.ReadIngredientsFromUser();
+        // var ingredients = _recipesUserInteraction.ReadIngredientsFromUser();
 
-        if (ingredients.Count > 0)
-        {
-            var recipe = new Recipe(ingredients);
-            allRecipies.Add(recipe);
-            _recipesRepository.Write(filePath, allRecipies);
-            _recipesUserInteraction.ShowMessage("Recipe added:");
-            _recipesUserInteraction.ShowMessage(recipe.ToString());
-        }
-        else
-        {
-            _recipesUserInteraction.ShowMessage(
-                "No ingredients have been selected. " + "Recipe will not be created."
-            );
-        }
+        // if (ingredients.Count > 0)
+        // {
+        //     var recipe = new Recipe(ingredients);
+        //     allRecipies.Add(recipe);
+        //     _recipesRepository.Write(filePath, allRecipies);
+        //     _recipesUserInteraction.ShowMessage("Recipe added:");
+        //     _recipesUserInteraction.ShowMessage(recipe.ToString());
+        // }
+        // else
+        // {
+        //     _recipesUserInteraction.ShowMessage(
+        //         "No ingredients have been selected. " + "Recipe will not be created."
+        //     );
+        // }
 
         _recipesUserInteraction.Exit();
     }
@@ -50,6 +52,7 @@ public interface IRecipesUserInteraction
 {
     void ShowMessage(string message);
     void Exit();
+    void PrintExistingRecipes(IEnumerable<Recipe> allRecipies);
 }
 
 public class RecipesConsoleUserInteraction : IRecipesUserInteraction
@@ -63,6 +66,27 @@ public class RecipesConsoleUserInteraction : IRecipesUserInteraction
     {
         Console.WriteLine("Press any key to exit...");
         Console.ReadKey();
+    }
+
+    public void PrintExistingRecipes(IEnumerable<Recipe> allRecipies)
+    {
+        if (allRecipies.Count() > 0)
+        {
+            Console.WriteLine("Existing recipes are:" + Environment.NewLine);
+
+            var counter = 1;
+            foreach (var recipe in allRecipies)
+            {
+                Console.WriteLine($"*******{counter}*******");
+                Console.WriteLine(recipe.ToString());
+                Console.WriteLine();
+                ++counter;
+            }
+        }
+        else
+        {
+            Console.WriteLine("No recipes found.");
+        }
     }
 }
 
@@ -81,68 +105,10 @@ public class RecipesRepository : IRecipesRepository
 
     public List<Recipe> Read(string filePath)
     {
-        Console.WriteLine($"Reading recipes from file: {filePath}");
-        return new List<Recipe>();
+        return new List<Recipe>
+        {
+            new(new List<Ingredient> { new WheatFlour(), new Butter(), new Sugar() }),
+            new(new List<Ingredient> { new Cardamom(), new Cinnamon() }),
+        };
     }
 }
-
-public class Recipe { }
-
-
-// public static class IngredientsGenerator
-// {
-//     public static List<Ingredient> GenerateIngredients()
-//     {
-//         return new List<Ingredient>
-//         {
-//             new()
-//             {
-//                 Id = 1,
-//                 Name = "Wheat flour",
-//                 PreparationInstruction = "Sieve. Add to other ingredients.",
-//             },
-//             new()
-//             {
-//                 Id = 2,
-//                 Name = "Coconut flour",
-//                 PreparationInstruction = "Sieve. Add to other ingredients.",
-//             },
-//             new()
-//             {
-//                 Id = 3,
-//                 Name = "Butter",
-//                 PreparationInstruction = "Melt on low heat. Add to other ingredients.",
-//             },
-//             new()
-//             {
-//                 Id = 4,
-//                 Name = "Chocolate",
-//                 PreparationInstruction = "Melt in a water bath. Add to other ingredients.",
-//             },
-//             new()
-//             {
-//                 Id = 5,
-//                 Name = "Sugar",
-//                 PreparationInstruction = "Add to other ingredients.",
-//             },
-//             new()
-//             {
-//                 Id = 6,
-//                 Name = "Cardamom",
-//                 PreparationInstruction = "Take half a teaspoon. Add to other ingredients.",
-//             },
-//             new()
-//             {
-//                 Id = 7,
-//                 Name = "Cinnamon",
-//                 PreparationInstruction = "Take half a teaspoon. Add to other ingredients.",
-//             },
-//             new()
-//             {
-//                 Id = 8,
-//                 Name = "Cocoa powder",
-//                 PreparationInstruction = "Add to other ingredients.",
-//             },
-//         };
-//     }
-// }
