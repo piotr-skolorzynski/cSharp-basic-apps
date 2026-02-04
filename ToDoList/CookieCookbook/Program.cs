@@ -1,14 +1,17 @@
-var cookiesRecipesApp = new CookiesRecipesApp();
+var cookiesRecipesApp = new CookiesRecipesApp(
+    new RecipesRepository(),
+    new RecipesConsoleUserInteraction()
+);
 cookiesRecipesApp.Run();
 
 public class CookiesRecipesApp
 {
-    private readonly RecipesRepository _recipesRepository;
-    private readonly RecipesUserInteraction _recipesUserInteraction;
+    private readonly IRecipesRepository _recipesRepository;
+    private readonly IRecipesUserInteraction _recipesUserInteraction;
 
     public CookiesRecipesApp(
-        RecipesRepository recipesRepository,
-        RecipesUserInteraction recipesUserInteraction
+        IRecipesRepository recipesRepository,
+        IRecipesUserInteraction recipesUserInteraction
     )
     {
         _recipesRepository = recipesRepository;
@@ -43,9 +46,47 @@ public class CookiesRecipesApp
     }
 }
 
-internal class RecipesUserInteraction { }
+public interface IRecipesUserInteraction
+{
+    void ShowMessage(string message);
+    void Exit();
+}
 
-internal class RecipesRepository { }
+public class RecipesConsoleUserInteraction : IRecipesUserInteraction
+{
+    public void ShowMessage(string message)
+    {
+        Console.WriteLine(message);
+    }
+
+    public void Exit()
+    {
+        Console.WriteLine("Press any key to exit...");
+        Console.ReadKey();
+    }
+}
+
+public interface IRecipesRepository
+{
+    void Write(string filePath, List<Recipe> recipes);
+    List<Recipe> Read(string filePath);
+}
+
+public class RecipesRepository : IRecipesRepository
+{
+    public void Write(string filePath, List<Recipe> recipes)
+    {
+        Console.WriteLine($"Writing recipes to file: {filePath}");
+    }
+
+    public List<Recipe> Read(string filePath)
+    {
+        Console.WriteLine($"Reading recipes from file: {filePath}");
+        return new List<Recipe>();
+    }
+}
+
+public class Recipe { }
 
 
 // public static class IngredientsGenerator
