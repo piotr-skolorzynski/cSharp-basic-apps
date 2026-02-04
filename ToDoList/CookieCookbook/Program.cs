@@ -2,7 +2,7 @@ using CookieCookbook.Recipes;
 
 var cookiesRecipesApp = new CookiesRecipesApp(
     new RecipesRepository(),
-    new RecipesConsoleUserInteraction()
+    new RecipesConsoleUserInteraction(new IngredientsRegistry())
 );
 cookiesRecipesApp.Run("recipes.txt");
 
@@ -25,7 +25,7 @@ public class CookiesRecipesApp
         var allRecipies = _recipesRepository.Read(filePath);
         _recipesUserInteraction.PrintExistingRecipes(allRecipies);
 
-        // _recipesUserInteraction.PromptToCreateRecipe();
+        _recipesUserInteraction.PromptToCreateRecipe();
 
         // var ingredients = _recipesUserInteraction.ReadIngredientsFromUser();
 
@@ -53,10 +53,33 @@ public interface IRecipesUserInteraction
     void ShowMessage(string message);
     void Exit();
     void PrintExistingRecipes(IEnumerable<Recipe> allRecipies);
+    void PromptToCreateRecipe();
+}
+
+public class IngredientsRegistry
+{
+    public IEnumerable<Ingredient> All = new List<Ingredient>
+    {
+        new WheatFlour(),
+        new SpeltFlour(),
+        new Butter(),
+        new Chocolate(),
+        new Sugar(),
+        new Cardamom(),
+        new Cinnamon(),
+        new CocoaPowder(),
+    };
 }
 
 public class RecipesConsoleUserInteraction : IRecipesUserInteraction
 {
+    private readonly IngredientsRegistry _ingredientsRegistry;
+
+    public RecipesConsoleUserInteraction(IngredientsRegistry ingredientsRegistry)
+    {
+        _ingredientsRegistry = ingredientsRegistry;
+    }
+
     public void ShowMessage(string message)
     {
         Console.WriteLine(message);
@@ -86,6 +109,16 @@ public class RecipesConsoleUserInteraction : IRecipesUserInteraction
         else
         {
             Console.WriteLine("No recipes found.");
+        }
+    }
+
+    public void PromptToCreateRecipe()
+    {
+        Console.WriteLine("Create a new cookie recipe! " + "Available ingredients are:");
+
+        foreach (var ingredient in _ingredientsRegistry.All)
+        {
+            Console.WriteLine(ingredient);
         }
     }
 }
