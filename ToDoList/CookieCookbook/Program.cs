@@ -1,8 +1,10 @@
 using CookieCookbook.Recipes;
 
+var ingredientsRegistry = new IngredientsRegistry();
+
 var cookiesRecipesApp = new CookiesRecipesApp(
-    new RecipesRepository(),
-    new RecipesConsoleUserInteraction(new IngredientsRegistry())
+    new RecipesRepository(new StringsTextualRepository(), ingredientsRegistry),
+    new RecipesConsoleUserInteraction(ingredientsRegistry)
 );
 cookiesRecipesApp.Run("recipes.txt");
 
@@ -57,19 +59,27 @@ public interface IRecipesUserInteraction
     IEnumerable<Ingredient> ReadIngredientsFromUser();
 }
 
-public class IngredientsRegistry
+public interface IIngredientsRegistry
 {
-    public IEnumerable<Ingredient> All = new List<Ingredient>
-    {
-        new WheatFlour(),
-        new SpeltFlour(),
-        new Butter(),
-        new Chocolate(),
-        new Sugar(),
-        new Cardamom(),
-        new Cinnamon(),
-        new CocoaPowder(),
-    };
+    IEnumerable<Ingredient> All { get; }
+
+    Ingredient GetById(int id);
+}
+
+public class IngredientsRegistry : IIngredientsRegistry
+{
+    public IEnumerable<Ingredient> All { get; } =
+        new List<Ingredient>
+        {
+            new WheatFlour(),
+            new SpeltFlour(),
+            new Butter(),
+            new Chocolate(),
+            new Sugar(),
+            new Cardamom(),
+            new Cinnamon(),
+            new CocoaPowder(),
+        };
 
     public Ingredient GetById(int id)
     {
@@ -172,17 +182,91 @@ public interface IRecipesRepository
 
 public class RecipesRepository : IRecipesRepository
 {
+    private const string Separator = ",";
+    private readonly IStringsRepository _stringsRepository;
+    private readonly IIngredientsRegistry _ingredientsRegistry;
+
+    public RecipesRepository(
+        IStringsRepository stringsRepository,
+        IIngredientsRegistry ingredientsRegistry
+    )
+    {
+        _stringsRepository = stringsRepository;
+        _ingredientsRegistry = ingredientsRegistry;
+    }
+
     public void Write(string filePath, List<Recipe> recipes)
     {
-        Console.WriteLine($"Writing recipes to file: {filePath}");
+        var recipesAsStrings = new List<string>();
+        foreach (var recipe in recipes)
+        {
+            var allIds = new List<string>();
+            foreach (var ingredient in recipe.Ingredients)
+            {
+                allIds.Add(ingredient.Id.ToString());
+            }
+            recipesAsStrings.Add(string.Join(Separator, allIds));
+        }
+
+        _stringsRepository.Write(filePath, recipesAsStrings);
     }
 
     public List<Recipe> Read(string filePath)
     {
-        return new List<Recipe>
+        List<string> recipesFromFile = _stringsRepository.Read(filePath);
+        var recipes = new List<Recipe>();
+
+        foreach (var recipeIds in recipesFromFile)
         {
-            new(new List<Ingredient> { new WheatFlour(), new Butter(), new Sugar() }),
-            new(new List<Ingredient> { new Cardamom(), new Cinnamon() }),
-        };
+            var recipe = RecipeFromString(recipeIds);
+            recipes.Add(recipe);
+        }
+
+        return recipes;
+    }
+
+    private Recipe RecipeFromString(string recipeFromFile)
+    {
+        var ingredientIds = recipeFromFile.Split(Separator);
+        var ingredients = new List<Ingredient>();
+
+        foreach (var ingredientId in ingredientIds)
+        {
+            var id = int.Parse(ingredientId);
+            var ingredient = _ingredientsRegistry.GetById(id);
+            ingredients.Add(ingredient);
+        }
+
+        return new Recipe(ingredients);
+    }
+}
+
+public interface IStringsRepository
+{
+    List<string> Read(string filePath);
+    void Write(string filePath, List<string> strings);
+}
+
+public class StringsTextualRepository : IStringsRepository
+{
+    private static readonly string Separator = Environment.NewLine;
+
+    public List<string> Read(string filePath)
+    {
+        if (File.Exists(filePath))
+        {
+            var fileContent = File.ReadAllText(filePath);
+            return fileContent.Split(Separator).ToList();
+        }
+        else
+        {
+            return new List<string>();
+        }
+    }
+
+    public void Write(string filePath, List<string> strings)
+    {
+        var fileContent = string.Join(Separator, strings);
+        File.WriteAllText(filePath, fileContent);
     }
 }
