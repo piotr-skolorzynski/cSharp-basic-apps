@@ -1,7 +1,9 @@
 ﻿using System.Text.Json;
 
+string fileName = string.Empty;
 bool isFileRead = false;
 string fileContents = string.Empty;
+List<VideoGame> videoGames = default;
 
 do
 {
@@ -9,7 +11,7 @@ do
     {
         Console.WriteLine("Please enter the file name you want to read:");
 
-        var fileName = Console.ReadLine();
+        fileName = Console.ReadLine();
 
         fileContents = File.ReadAllText(fileName);
 
@@ -27,11 +29,24 @@ do
     }
 } while (!isFileRead);
 
-var videoGames = JsonSerializer.Deserialize<List<VideoGame>>(fileContents);
+try
+{
+    videoGames = JsonSerializer.Deserialize<List<VideoGame>>(fileContents);
+}
+catch (JsonException ex)
+{
+    var originalColor = Console.ForegroundColor;
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine($"JSON in {fileName} file was not in a valid format. JSON body :");
+    Console.WriteLine(fileContents);
+    Console.ForegroundColor = originalColor;
+
+    throw new JsonException($"{ex.Message} The file is: {fileName}", ex);
+}
 
 if (videoGames.Count > 0)
 {
-    System.Console.WriteLine();
+    Console.WriteLine();
     Console.WriteLine("Loaded video games:");
 
     foreach (var game in videoGames)
