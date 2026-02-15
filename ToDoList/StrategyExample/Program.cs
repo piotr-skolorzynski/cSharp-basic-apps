@@ -6,27 +6,27 @@ Console.WriteLine(string.Join(", ", filteringStrategySelector.FilteringStrategyN
 
 var userInput = Console.ReadLine();
 var filteringStrategy = new FilteringStrategySelector().Select(userInput);
-var result = new NumbersFilter().FilterBy(filteringStrategy, numbers);
+var result = new Filter().FilterBy(filteringStrategy, numbers);
 
 Print(result);
 
 Console.ReadKey();
 
-void Print(List<int> numbers)
+void Print(IEnumerable<int> numbers)
 {
     Console.WriteLine(string.Join(", ", numbers));
 }
 
-public class NumbersFilter
+public class Filter
 {
-    public List<int> FilterBy(Func<int, bool> predicate, List<int> numbers)
+    public IEnumerable<T> FilterBy<T>(Func<T, bool> predicate, IEnumerable<T> items)
     {
-        var result = new List<int>();
-        foreach (var number in numbers)
+        var result = new List<T>();
+        foreach (var item in items)
         {
-            if (predicate(number))
+            if (predicate(item))
             {
-                result.Add(number);
+                result.Add(item);
             }
         }
 
