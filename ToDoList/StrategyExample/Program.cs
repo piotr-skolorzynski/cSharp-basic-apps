@@ -7,8 +7,10 @@ Odd
 Positive
 "
 );
-var input = Console.ReadLine();
-var result = new NumbersFilter().FilterBy(input, numbers);
+
+var userInput = Console.ReadLine();
+var filteringStrategy = new FilteringStrategySelector().Select(userInput);
+var result = new NumbersFilter().FilterBy(filteringStrategy, numbers);
 
 Print(result);
 
@@ -21,22 +23,7 @@ void Print(List<int> numbers)
 
 public class NumbersFilter
 {
-    public List<int> FilterBy(string filteringType, List<int> numbers)
-    {
-        switch (filteringType)
-        {
-            case "Even":
-                return Select(numbers, n => n % 2 == 0);
-            case "Odd":
-                return Select(numbers, n => n % 2 == 1);
-            case "Positive":
-                return Select(numbers, n => n > 0);
-            default:
-                throw new NotSupportedException($"{filteringType} is not a valid filter");
-        }
-    }
-
-    private List<int> Select(List<int> numbers, Func<int, bool> predicate)
+    public List<int> FilterBy(Func<int, bool> predicate, List<int> numbers)
     {
         var result = new List<int>();
         foreach (var number in numbers)
@@ -48,5 +35,33 @@ public class NumbersFilter
         }
 
         return result;
+    }
+}
+
+public class FilteringStrategySelector
+{
+    private readonly Dictionary<string, Func<int, bool>> _filteringStrategies = new Dictionary<
+        string,
+        Func<int, bool>
+    >
+    // { alternatywne sposoby inicjalizacji słownika:
+    //     { "Even", n => n % 2 == 0 },
+    //     { "Odd", n => n % 2 == 1 },
+    //     { "Positive", n => n > 0 },
+    // };
+    {
+        ["Even"] = n => n % 2 == 0,
+        ["Odd"] = n => n % 2 == 1,
+        ["Positive"] = n => n > 0,
+    };
+
+    public Func<int, bool> Select(string filteringType)
+    {
+        if (!_filteringStrategies.ContainsKey(filteringType))
+        {
+            throw new ArgumentException($"Filtering type {filteringType} is not supported.");
+        }
+
+        return _filteringStrategies[filteringType];
     }
 }
