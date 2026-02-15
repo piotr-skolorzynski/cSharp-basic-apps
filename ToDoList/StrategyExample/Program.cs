@@ -8,69 +8,73 @@ Positive
 "
 );
 var input = Console.ReadLine();
-List<int> result;
-switch (input)
-{
-    case "Even":
-        result = SelectEven(numbers);
-        break;
-    case "Odd":
-        result = SelectOdd(numbers);
-        break;
-    case "Positive":
-        result = SelectPositive(numbers);
-        break;
-    default:
-        throw new NotSupportedException($"{input} is not a valid filter");
-}
+var result = new NumbersFilter().FilterBy(input, numbers);
 
 Print(result);
+
+Console.ReadKey();
 
 void Print(List<int> numbers)
 {
     Console.WriteLine(string.Join(", ", numbers));
 }
 
-List<int> SelectEven(List<int> numbers)
+public class NumbersFilter
 {
-    var result = new List<int>();
-    foreach (var number in numbers)
+    public List<int> FilterBy(string filteringType, List<int> numbers)
     {
-        if (number % 2 == 0)
+        switch (filteringType)
         {
-            result.Add(number);
+            case "Even":
+                return SelectEven(numbers);
+            case "Odd":
+                return SelectOdd(numbers);
+            case "Positive":
+                return SelectPositive(numbers);
+            default:
+                throw new NotSupportedException($"{filteringType} is not a valid filter");
         }
     }
 
-    return result;
-}
-
-List<int> SelectOdd(List<int> numbers)
-{
-    var result = new List<int>();
-    foreach (var number in numbers)
+    private List<int> SelectEven(List<int> numbers)
     {
-        if (number % 2 == 1)
+        var result = new List<int>();
+        foreach (var number in numbers)
         {
-            result.Add(number);
+            if (number % 2 == 0)
+            {
+                result.Add(number);
+            }
         }
+
+        return result;
     }
 
-    return result;
-}
-
-List<int> SelectPositive(List<int> numbers)
-{
-    var result = new List<int>();
-    foreach (var number in numbers)
+    private List<int> SelectOdd(List<int> numbers)
     {
-        if (number > 0)
+        var result = new List<int>();
+        foreach (var number in numbers)
         {
-            result.Add(number);
+            if (number % 2 == 1)
+            {
+                result.Add(number);
+            }
         }
+
+        return result;
     }
 
-    return result;
-}
+    private List<int> SelectPositive(List<int> numbers)
+    {
+        var result = new List<int>();
+        foreach (var number in numbers)
+        {
+            if (number > 0)
+            {
+                result.Add(number);
+            }
+        }
 
-Console.ReadKey();
+        return result;
+    }
+}
