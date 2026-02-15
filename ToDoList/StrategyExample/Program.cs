@@ -1,12 +1,8 @@
 ﻿var numbers = new List<int> { 10, 12, -100, 55, 17, 22 };
+var filteringStrategySelector = new FilteringStrategySelector();
 
-Console.WriteLine(
-    @"Select filter:
-Even
-Odd
-Positive
-"
-);
+Console.WriteLine("Select filter:");
+Console.WriteLine(string.Join(", ", filteringStrategySelector.FilteringStrategyNames));
 
 var userInput = Console.ReadLine();
 var filteringStrategy = new FilteringStrategySelector().Select(userInput);
@@ -53,7 +49,10 @@ public class FilteringStrategySelector
         ["Even"] = n => n % 2 == 0,
         ["Odd"] = n => n % 2 == 1,
         ["Positive"] = n => n > 0,
+        ["Negative"] = n => n < 0,
     };
+
+    public IEnumerable<string> FilteringStrategyNames => _filteringStrategies.Keys;
 
     public Func<int, bool> Select(string filteringType)
     {
