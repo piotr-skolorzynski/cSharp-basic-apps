@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameDataParser", "GameDataP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StrategyExample", "StrategyExample\StrategyExample.csproj", "{661087D0-DB46-4344-8B7B-6E832B0A284F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomCache", "CustomCache\CustomCache.csproj", "{83ECE051-4344-4DA7-91A8-C93441072DB9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{661087D0-DB46-4344-8B7B-6E832B0A284F}.Release|x64.Build.0 = Release|Any CPU
 		{661087D0-DB46-4344-8B7B-6E832B0A284F}.Release|x86.ActiveCfg = Release|Any CPU
 		{661087D0-DB46-4344-8B7B-6E832B0A284F}.Release|x86.Build.0 = Release|Any CPU
+		{83ECE051-4344-4DA7-91A8-C93441072DB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83ECE051-4344-4DA7-91A8-C93441072DB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83ECE051-4344-4DA7-91A8-C93441072DB9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{83ECE051-4344-4DA7-91A8-C93441072DB9}.Debug|x64.Build.0 = Debug|Any CPU
+		{83ECE051-4344-4DA7-91A8-C93441072DB9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{83ECE051-4344-4DA7-91A8-C93441072DB9}.Debug|x86.Build.0 = Debug|Any CPU
+		{83ECE051-4344-4DA7-91A8-C93441072DB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83ECE051-4344-4DA7-91A8-C93441072DB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83ECE051-4344-4DA7-91A8-C93441072DB9}.Release|x64.ActiveCfg = Release|Any CPU
+		{83ECE051-4344-4DA7-91A8-C93441072DB9}.Release|x64.Build.0 = Release|Any CPU
+		{83ECE051-4344-4DA7-91A8-C93441072DB9}.Release|x86.ActiveCfg = Release|Any CPU
+		{83ECE051-4344-4DA7-91A8-C93441072DB9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
