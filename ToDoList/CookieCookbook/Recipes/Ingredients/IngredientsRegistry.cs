@@ -17,14 +17,17 @@ public class IngredientsRegistry : IIngredientsRegistry
 
     public Ingredient GetById(int id)
     {
-        foreach (var ingredient in All)
+        var ingredientsWithGivenId = All.Where(ingredient => ingredient.Id == id);
+        if (ingredientsWithGivenId.Count() > 1)
         {
-            if (ingredient.Id == id)
-            {
-                return ingredient;
-            }
+            throw new InvalidOperationException($"More than one ingredient has ID equal to {id}.");
         }
 
-        return null;
+        // if (All.Select(ingredient => ingredient.Id == id).Distinct().Count() != All.Count())
+        // {
+        //     throw new InvalidOperationException($"Some ingredients have duplicated IDs.");
+        // }
+
+        return ingredientsWithGivenId.FirstOrDefault();
     }
 }

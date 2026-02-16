@@ -20,45 +20,42 @@ public class RecipesRepository : IRecipesRepository
 
     public void Write(string filePath, List<Recipe> recipes)
     {
-        var recipesAsStrings = new List<string>();
-        foreach (var recipe in recipes)
-        {
-            var allIds = new List<string>();
-            foreach (var ingredient in recipe.Ingredients)
-            {
-                allIds.Add(ingredient.Id.ToString());
-            }
-            recipesAsStrings.Add(string.Join(Separator, allIds));
-        }
+        //short version
+        // var recipesAsStrings = recipes.Select(recipe =>
+        //     string.Join(
+        //         Separator,
+        //         recipe.Ingredients.Select(ingredient => ingredient.Id.ToString())
+        //     )
+        // );
 
-        _stringsRepository.Write(filePath, recipesAsStrings);
+        var recipesAsStrings = recipes
+            .Select(recipe =>
+            {
+                var ids = recipe.Ingredients.Select(ingredient => ingredient.Id.ToString());
+
+                return string.Join(Separator, ids);
+            })
+            .ToList();
+
+        _stringsRepository.Write(filePath, recipesAsStrings.ToList());
     }
 
     public List<Recipe> Read(string filePath)
     {
-        List<string> recipesFromFile = _stringsRepository.Read(filePath);
-        var recipes = new List<Recipe>();
+        // return _stringsRepository.Read(filePath).Select(recipeFromFile =>
+        //     RecipeFromString(recipeFromFile)
+        // );
 
-        foreach (var recipeIds in recipesFromFile)
-        {
-            var recipe = RecipeFromString(recipeIds);
-            recipes.Add(recipe);
-        }
-
-        return recipes;
+        //shorter version
+        return _stringsRepository.Read(filePath).Select(RecipeFromString).ToList();
     }
 
     private Recipe RecipeFromString(string recipeFromFile)
     {
-        var ingredientIds = recipeFromFile.Split(Separator);
-        var ingredients = new List<Ingredient>();
-
-        foreach (var ingredientId in ingredientIds)
-        {
-            var id = int.Parse(ingredientId);
-            var ingredient = _ingredientsRegistry.GetById(id);
-            ingredients.Add(ingredient);
-        }
+        var ingredients = recipeFromFile
+            .Split(Separator)
+            .Select(int.Parse) //shorthand to replace .Select(id => int.Parse(id))
+            .Select(_ingredientsRegistry.GetById); //.Select(id => _ingredientsRegistry.GetById)
 
         return new Recipe(ingredients);
     }
