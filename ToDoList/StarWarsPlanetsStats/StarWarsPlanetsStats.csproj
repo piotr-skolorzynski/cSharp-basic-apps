@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ApiDataAccess\" />
-    <Folder Include="DTOs\" />
+    <Folder Include="App\" />
   </ItemGroup>
 </Project>

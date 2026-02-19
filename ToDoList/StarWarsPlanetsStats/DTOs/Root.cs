@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace StartWarsPlanetsStats.DTOs;
+namespace StarWarsPlanetsStats.DTOs;
 
 public record Root(
     [property: JsonPropertyName("count")] int count,

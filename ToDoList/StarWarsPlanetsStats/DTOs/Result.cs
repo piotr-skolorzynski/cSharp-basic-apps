@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace StartWarsPlanetsStats.DTOs;
+namespace StarWarsPlanetsStats.DTOs;
 
 public record Result(
     [property: JsonPropertyName("name")] string name,
