@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 
+namespace StartWarsPlanetsStats.DTOs;
+
 public record Result(
     [property: JsonPropertyName("name")] string name,
     [property: JsonPropertyName("rotation_period")] string rotation_period,

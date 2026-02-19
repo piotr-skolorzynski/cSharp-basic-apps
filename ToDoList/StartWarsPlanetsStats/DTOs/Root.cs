@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 
+namespace StartWarsPlanetsStats.DTOs;
+
 public record Root(
     [property: JsonPropertyName("count")] int count,
     [property: JsonPropertyName("next")] string next,

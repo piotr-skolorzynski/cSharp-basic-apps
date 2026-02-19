@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using StartWarsPlanetsStats.ApiDataAccess;
+using StartWarsPlanetsStats.DTOs;
 
 var baseAddress = "https://swapi.dev/api/";
 var requestUri = "planets";
