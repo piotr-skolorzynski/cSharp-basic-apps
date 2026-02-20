@@ -1,9 +1,14 @@
 ﻿using StarWarsPlanetsStats.ApiDataAccess;
 using StarWarsPlanetsStats.App;
+using StarWarsPlanetsStats.DataAccess;
+using StarWarsPlanetsStats.UserInteraction;
 
 try
 {
-    await new StarWarsPlanetStatsApp(new ApiDataReader(), new MockStarWarsApiDataReader()).Run();
+    await new StarWarsPlanetStatsApp(
+        new PlanetsFromApiReader(new ApiDataReader(), new MockStarWarsApiDataReader()),
+        new PlanetsStatisticsAnalyzer(new PlanetsStatsUserInteractor(new ConsoleUserInteractor()))
+    ).Run();
 }
 catch (Exception ex)
 {
