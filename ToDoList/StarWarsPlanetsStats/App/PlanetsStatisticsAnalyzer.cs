@@ -14,12 +14,14 @@ public class PlanetsStatisticsAnalyzer : IPlanetsStatisticsAnalyzer
 
     public void Analyze(IEnumerable<Planet> planets)
     {
-        var propertyNamesToSelectorsMapping = new Dictionary<string, Func<Planet, int?>>()
+        var propertyNamesToSelectorsMapping = new Dictionary<string, Func<Planet, long?>>()
         {
             ["population"] = planet => planet.Population,
             ["diameter"] = planet => planet.Diameter,
             ["surface water"] = planet => planet.SurfaceWater,
         };
+
+        _planetsStatsUserInteractor.Show(planets);
 
         var userChoice = _planetsStatsUserInteractor.ChooseStatisticsToBeShown(
             propertyNamesToSelectorsMapping.Keys
@@ -38,7 +40,7 @@ public class PlanetsStatisticsAnalyzer : IPlanetsStatisticsAnalyzer
     private static void ShowStatistics(
         IEnumerable<Planet> planets,
         string propertyName,
-        Func<Planet, int?> propertySelector
+        Func<Planet, long?> propertySelector
     )
     {
         ShowStatistics("Max", planets.MaxBy(propertySelector), propertySelector, propertyName);
@@ -48,7 +50,7 @@ public class PlanetsStatisticsAnalyzer : IPlanetsStatisticsAnalyzer
     private static void ShowStatistics(
         string descriptor,
         Planet selectedPlanet,
-        Func<Planet, int?> propertySelector,
+        Func<Planet, long?> propertySelector,
         string propertyName
     )
     {
