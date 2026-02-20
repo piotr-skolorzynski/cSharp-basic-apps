@@ -32,79 +32,65 @@ public class StarWarsPlanetStatsApp
             );
         }
 
-        if (json is null)
-        {
-            json = await _secondaryApiReader.Read(baseAddress, requestUri);
-        }
+        json ??= await _secondaryApiReader.Read(baseAddress, requestUri);
 
         var root = JsonSerializer.Deserialize<Root>(json);
 
         var planets = ToPlanets(root);
 
-        foreach (var planet in planets)
+        var propertyNamesToSelectorsMapping = new Dictionary<string, Func<Planet, int?>>()
         {
-            Console.WriteLine(planet);
-        }
+            ["population"] = planet => planet.Population,
+            ["diameter"] = planet => planet.Diameter,
+            ["surface water"] = planet => planet.SurfaceWater,
+        };
 
         Console.WriteLine();
-
         Console.WriteLine("The statistics of which property would you like to see?");
-        Console.WriteLine("population");
-        Console.WriteLine("diameter");
-        Console.WriteLine("surface water");
+        Console.WriteLine(string.Join(Environment.NewLine, propertyNamesToSelectorsMapping.Keys));
 
         var userChoice = Console.ReadLine();
 
-        if (userChoice == "population")
-        {
-            ShowStatistics(planets, "population", planet => planet.Population);
-        }
-        else if (userChoice == "diameter")
-        {
-            ShowStatistics(planets, "diameter", planet => planet.Diameter);
-        }
-        else if (userChoice == "seurface water")
-        {
-            ShowStatistics(planets, "surface water", planet => planet.SurfaceWater);
-        }
-        else
+        if (userChoice is null || !propertyNamesToSelectorsMapping.ContainsKey(userChoice))
         {
             Console.WriteLine("Invalid choice!");
         }
+        else
+        {
+            ShowStatistics(planets, userChoice, propertyNamesToSelectorsMapping[userChoice]);
+        }
     }
 
-    private void ShowStatistics(
+    private static void ShowStatistics(
         IEnumerable<Planet> planets,
         string propertyName,
         Func<Planet, int?> propertySelector
     )
     {
-        var planetWithMaxPropertyName = planets.MaxBy(propertySelector);
-        Console.WriteLine(
-            $"Max {propertyName} is: {propertySelector(planetWithMaxPropertyName)}. Planet: {planetWithMaxPropertyName.Name}"
-        );
+        ShowStatistics("Max", planets.MaxBy(propertySelector), propertySelector, propertyName);
+        ShowStatistics("Min", planets.MinBy(propertySelector), propertySelector, propertyName);
+    }
 
-        var planetWithMinPropertyName = planets.MinBy(propertySelector);
+    private static void ShowStatistics(
+        string descriptor,
+        Planet selectedPlanet,
+        Func<Planet, int?> propertySelector,
+        string propertyName
+    )
+    {
         Console.WriteLine(
-            $"Min {propertyName} is: {propertySelector(planetWithMinPropertyName)}. Planet: {planetWithMinPropertyName.Name}"
+            $"{descriptor} {propertyName} is: {propertySelector(selectedPlanet)} (planet: {selectedPlanet.Name})"
         );
     }
 
-    private IEnumerable<Planet> ToPlanets(Root? root)
+    private static IEnumerable<Planet> ToPlanets(Root? root)
     {
         if (root is null)
         {
             throw new ArgumentNullException(nameof(root));
         }
 
-        var planets = new List<Planet>();
-        foreach (var planetDto in root.results)
-        {
-            Planet planet = (Planet)planetDto;
-            planets.Add(planet);
-        }
-
-        return planets;
+        return root.results.Select(planetDto => (Planet)planetDto);
     }
 }
 
@@ -143,12 +129,6 @@ public static class StringExtensions
 {
     public static int? ToIntOrNull(this string input)
     {
-        int? result = null;
-        if (int.TryParse(input, out int parsedInput))
-        {
-            result = parsedInput;
-        }
-
-        return result;
+        return int.TryParse(input, out int parsedInput) ? parsedInput : null;
     }
 }
