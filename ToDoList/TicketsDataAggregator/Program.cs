@@ -1,10 +1,15 @@
-﻿using TicketsDataAggregator.TicketsAggregation;
+﻿using TicketsDataAggregator.FileAccess;
+using TicketsDataAggregator.TicketsAggregation;
 
 const string TicketsFolder = @"D:\Repos\Tickets";
 
 try
 {
-    var ticketsAggregator = new TicketsAggregator(TicketsFolder);
+    var ticketsAggregator = new TicketsAggregator(
+        TicketsFolder,
+        new FileWriter(),
+        new DocumentsFromPdfsReader()
+    );
     ticketsAggregator.Run();
 }
 catch (Exception ex)

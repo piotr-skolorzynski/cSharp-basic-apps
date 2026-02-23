@@ -1,12 +1,14 @@
 using System.Globalization;
 using System.Text;
-using UglyToad.PdfPig;
-using UglyToad.PdfPig.Content;
+using TicketsDataAggregator.FileAccess;
+using TicketsDataAggregator.TicketExtensions;
 
 namespace TicketsDataAggregator.TicketsAggregation;
 
 public class TicketsAggregator
 {
+    private readonly IFileWriter _fileWriter;
+    private readonly IDocumentsReader _documentsReader;
     private readonly string _ticketsFolder;
     private readonly Dictionary<string, CultureInfo> _domainToCultureMapping = new()
     {
@@ -15,36 +17,40 @@ public class TicketsAggregator
         [".jp"] = new CultureInfo("ja-JP"),
     };
 
-    public TicketsAggregator(string ticketsFolder)
+    public TicketsAggregator(
+        string ticketsFolder,
+        IFileWriter fileWriter,
+        IDocumentsReader documentsReader
+    )
     {
         _ticketsFolder = ticketsFolder;
+        _fileWriter = fileWriter;
+        _documentsReader = documentsReader;
     }
 
     public void Run()
     {
         var stringBuilder = new StringBuilder();
 
-        foreach (var filePath in Directory.GetFiles(_ticketsFolder, "*.pdf"))
+        var ticketDocuments = _documentsReader.Read(_ticketsFolder);
+
+        foreach (var document in ticketDocuments)
         {
-            using PdfDocument document = PdfDocument.Open(filePath);
-
-            Page page = document.GetPage(1);
-
-            var lines = ProcessPage(page);
+            var lines = ProcessDocument(document);
             stringBuilder.AppendLine(string.Join(Environment.NewLine, lines));
-
-            SaveTicketsData(stringBuilder);
         }
+
+        _fileWriter.Write(stringBuilder.ToString(), _ticketsFolder, "aggregatedTickets.txt");
     }
 
-    private IEnumerable<string> ProcessPage(Page page)
+    private IEnumerable<string> ProcessDocument(string document)
     {
-        var split = page.Text.Split(
+        var split = document.Split(
             new[] { "Title:", "Date:", "Time:", "Visit us:" },
             StringSplitOptions.None
         );
 
-        var domain = ExtractDomain(split.Last());
+        var domain = split.Last().ExtractDomain();
         var ticketCulture = _domainToCultureMapping[domain];
 
         for (int i = 1; i < split.Length - 3; i += 3)
@@ -70,18 +76,5 @@ public class TicketsAggregator
         var timeAsStringInvariant = time.ToString(CultureInfo.InvariantCulture);
 
         return $"{title, -40}|{dateAsStringInvariant}|{timeAsStringInvariant}";
-    }
-
-    private void SaveTicketsData(StringBuilder stringBuilder)
-    {
-        var resultPath = Path.Combine(_ticketsFolder, "aggregatorTickets.txt");
-        File.WriteAllText(resultPath, stringBuilder.ToString());
-        Console.WriteLine("Results save to " + resultPath);
-    }
-
-    private static string ExtractDomain(string webAddress)
-    {
-        var lastDotIndex = webAddress.LastIndexOf('.');
-        return webAddress.Substring(lastDotIndex);
     }
 }
