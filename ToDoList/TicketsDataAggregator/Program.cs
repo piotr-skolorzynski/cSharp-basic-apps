@@ -13,8 +13,8 @@ catch (Exception ex)
     Console.WriteLine($"An error occured. Exception message: {ex.Message}");
 }
 
-System.Console.WriteLine("Press any key to close");
-Console.ReadKey();
+Console.WriteLine("Press any key to close");
+Console.ReadLine();
 
 public class TicketsAggregator
 {
@@ -34,6 +34,21 @@ public class TicketsAggregator
             Page page = document.GetPage(1);
 
             string text = page.Text;
+
+            var split = text.Split(
+                new[] { "Title:", "Date:", "Time:", "Visit us:" },
+                StringSplitOptions.None
+            );
+            //structure of pdf files
+            //first element is a title of a ticket
+            //each ticker is described in a sequence of 3 lines
+            //so for loop will check try to process each of them
+            for (int i = 1; i < split.Length - 3; i += 3)
+            {
+                var title = split[i];
+                var date = split[i + 1];
+                var time = split[i + 2];
+            }
         }
     }
 }
