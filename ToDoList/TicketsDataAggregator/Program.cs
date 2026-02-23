@@ -27,26 +27,13 @@ public class TicketsAggregator
 
     public void Run()
     {
-        using (PdfDocument document = PdfDocument.Open(_ticketsFolder + @"\Tickets1.pdf"))
+        foreach (var filePath in Directory.GetFiles(_ticketsFolder, "*.pdf"))
         {
-            // int pageCount = document.NumberOfPages;
+            using PdfDocument document = PdfDocument.Open(filePath);
 
-            // Page number starts from 1, not 0.
             Page page = document.GetPage(1);
-
-            // decimal widthInPoints = page.Width;
-            // decimal heightInPoints = page.Height;
 
             string text = page.Text;
         }
     }
 }
-
-// using (PdfDocument document = PdfDocument.Open(@"C:\Documents\document.pdf"))
-// {
-//     foreach (Page page in document.GetPages())
-//     {
-//         string text = ContentOrderTextExtractor.GetText(page);
-//         IEnumerable<Word> words = page.GetWords(NearestNeighbourWordExtractor.Instance);
-//     }
-// }
