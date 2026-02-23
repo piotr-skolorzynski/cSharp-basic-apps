@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 
@@ -34,6 +35,8 @@ public class TicketsAggregator
 
     public void Run()
     {
+        var stringBuilder = new StringBuilder();
+
         foreach (var filePath in Directory.GetFiles(_ticketsFolder, "*.pdf"))
         {
             using PdfDocument document = PdfDocument.Open(filePath);
@@ -61,7 +64,18 @@ public class TicketsAggregator
 
                 var date = DateOnly.Parse(dateAsString, new CultureInfo(ticketCulture));
                 var time = TimeOnly.Parse(timeAsString, new CultureInfo(ticketCulture));
+
+                var dateAsStringInvariant = date.ToString(CultureInfo.InvariantCulture);
+                var timeAsStringInvariant = time.ToString(CultureInfo.InvariantCulture);
+
+                var ticketData = $"{title, -40}|{dateAsStringInvariant}|{timeAsStringInvariant}";
+
+                stringBuilder.AppendLine(ticketData);
             }
+
+            var resultPath = Path.Combine(_ticketsFolder, "aggregatorTickets.txt");
+            File.WriteAllText(resultPath, stringBuilder.ToString());
+            Console.WriteLine("Results save to " + resultPath);
         }
     }
 
