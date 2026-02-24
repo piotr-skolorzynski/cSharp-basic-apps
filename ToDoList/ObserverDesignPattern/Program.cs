@@ -14,11 +14,21 @@ for (int i = 0; i < 3; ++i)
 
 Console.ReadKey();
 
-public delegate void PriceRead(decimal price);
+// public delegate void PriceRead(decimal price);
+
+public class PriceReadEventArgs : EventArgs
+{
+    public decimal Price { get; }
+
+    public PriceReadEventArgs(decimal price)
+    {
+        Price = price;
+    }
+}
 
 public class GoldPriceReader
 {
-    public event PriceRead? PriceRead;
+    public event EventHandler<PriceReadEventArgs>? PriceRead;
 
     public void ReadCurrentPrice()
     {
@@ -29,7 +39,9 @@ public class GoldPriceReader
 
     private void OnPriceRead(decimal price)
     {
-        PriceRead?.Invoke(price);
+        //this means that instance of GoldPriceReader is a sender
+        //next is instantiation of PriceReadEventArgs
+        PriceRead?.Invoke(this, new PriceReadEventArgs(price));
     }
 }
 
@@ -42,13 +54,13 @@ public class EmailPriceChangeNotifier
         _notificationTreshold = notificationTreshold;
     }
 
-    public void Update(decimal price)
+    public void Update(object? sender, PriceReadEventArgs eventArgs)
     {
-        if (price > _notificationTreshold)
+        if (eventArgs.Price > _notificationTreshold)
         {
             //imagine this is acctually sending email
             Console.WriteLine(
-                $"Sending an email saying that the gold price exceeded {_notificationTreshold} and is now {price}\n"
+                $"Sending an email saying that the gold price exceeded {_notificationTreshold} and is now {eventArgs.Price}\n"
             );
         }
     }
@@ -63,13 +75,13 @@ public class PushPriceChangeNotifier
         _notificationTreshold = notificationTreshold;
     }
 
-    public void Update(decimal price)
+    public void Update(object? sender, PriceReadEventArgs eventArgs)
     {
-        if (price > _notificationTreshold)
+        if (eventArgs.Price > _notificationTreshold)
         {
             //imagine this is acctually sending a push motification
             Console.WriteLine(
-                $"Sending a push notification saying that the gold price exceeded {_notificationTreshold} and is now {price}\n"
+                $"Sending a push notification saying that the gold price exceeded {_notificationTreshold} and is now {eventArgs.Price}\n"
             );
         }
     }
