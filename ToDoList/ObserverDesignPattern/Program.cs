@@ -3,8 +3,9 @@
 var emailPriceChangeNotifier = new EmailPriceChangeNotifier(treshold);
 var pushPriceChangeNotifier = new PushPriceChangeNotifier(treshold);
 var priceReader = new GoldPriceReader();
-priceReader.AttachObserver(emailPriceChangeNotifier);
-priceReader.AttachObserver(pushPriceChangeNotifier);
+
+priceReader.PriceRead += emailPriceChangeNotifier.Update;
+priceReader.PriceRead += pushPriceChangeNotifier.Update;
 
 for (int i = 0; i < 3; ++i)
 {
@@ -13,37 +14,26 @@ for (int i = 0; i < 3; ++i)
 
 Console.ReadKey();
 
-public class GoldPriceReader : IObservable<decimal>
+public delegate void PriceRead(decimal price);
+
+public class GoldPriceReader
 {
-    private int _currentGoldPrice;
-    private readonly List<IObserver<decimal>> _observers = [];
+    public event PriceRead? PriceRead;
 
     public void ReadCurrentPrice()
     {
-        _currentGoldPrice = new Random().Next(20_000, 50_000);
-        NotifyObservers();
+        var _currentGoldPrice = new Random().Next(20_000, 50_000);
+
+        OnPriceRead(_currentGoldPrice);
     }
 
-    public void AttachObserver(IObserver<decimal> observer)
+    private void OnPriceRead(decimal price)
     {
-        _observers.Add(observer);
-    }
-
-    public void DetachObser(IObserver<decimal> observer)
-    {
-        _observers.Remove(observer);
-    }
-
-    public void NotifyObservers()
-    {
-        foreach (var observer in _observers)
-        {
-            observer.Update(_currentGoldPrice);
-        }
+        PriceRead?.Invoke(price);
     }
 }
 
-public class EmailPriceChangeNotifier : IObserver<decimal>
+public class EmailPriceChangeNotifier
 {
     private readonly decimal _notificationTreshold;
 
@@ -64,7 +54,7 @@ public class EmailPriceChangeNotifier : IObserver<decimal>
     }
 }
 
-public class PushPriceChangeNotifier : IObserver<decimal>
+public class PushPriceChangeNotifier
 {
     private readonly decimal _notificationTreshold;
 
@@ -83,16 +73,4 @@ public class PushPriceChangeNotifier : IObserver<decimal>
             );
         }
     }
-}
-
-public interface IObserver<TData>
-{
-    void Update(TData data);
-}
-
-public interface IObservable<TData>
-{
-    void AttachObserver(IObserver<TData> observer);
-    void DetachObser(IObserver<TData> observer);
-    void NotifyObservers();
 }
