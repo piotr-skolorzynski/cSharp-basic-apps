@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomLinkedList", "CustomL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketsDataAggregator", "TicketsDataAggregator\TicketsDataAggregator.csproj", "{74E17E65-206C-4184-A253-44079F2D3FFE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObserverDesignPattern", "ObserverDesignPattern\ObserverDesignPattern.csproj", "{7DD53493-9BD5-4AA7-AB98-517CCF953A03}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +155,18 @@ Global
 		{74E17E65-206C-4184-A253-44079F2D3FFE}.Release|x64.Build.0 = Release|Any CPU
 		{74E17E65-206C-4184-A253-44079F2D3FFE}.Release|x86.ActiveCfg = Release|Any CPU
 		{74E17E65-206C-4184-A253-44079F2D3FFE}.Release|x86.Build.0 = Release|Any CPU
+		{7DD53493-9BD5-4AA7-AB98-517CCF953A03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DD53493-9BD5-4AA7-AB98-517CCF953A03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DD53493-9BD5-4AA7-AB98-517CCF953A03}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7DD53493-9BD5-4AA7-AB98-517CCF953A03}.Debug|x64.Build.0 = Debug|Any CPU
+		{7DD53493-9BD5-4AA7-AB98-517CCF953A03}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7DD53493-9BD5-4AA7-AB98-517CCF953A03}.Debug|x86.Build.0 = Debug|Any CPU
+		{7DD53493-9BD5-4AA7-AB98-517CCF953A03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DD53493-9BD5-4AA7-AB98-517CCF953A03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DD53493-9BD5-4AA7-AB98-517CCF953A03}.Release|x64.ActiveCfg = Release|Any CPU
+		{7DD53493-9BD5-4AA7-AB98-517CCF953A03}.Release|x64.Build.0 = Release|Any CPU
+		{7DD53493-9BD5-4AA7-AB98-517CCF953A03}.Release|x86.ActiveCfg = Release|Any CPU
+		{7DD53493-9BD5-4AA7-AB98-517CCF953A03}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
